@@ -10,13 +10,13 @@ const CONFIG = {
 
 /* ========= CONTEÚDO EDITÁVEL ========= */
 const SLIDES_SOBRE = [
-  { icone: "✝", titulo: "Quem somos", texto: "O Seminário SDC Teologia – Bahia é uma instituição dedicada ao ensino bíblico e teológico cristão." },
-  { icone: "◎", titulo: "Nossa missão", texto: "Preparar homens e mulheres para conhecer, viver e ensinar a Palavra de Deus." },
-  { icone: "◉", titulo: "Nossa visão", texto: "Ver vidas transformadas pelo evangelho e igrejas fortalecidas pelo ensino fiel das Escrituras." },
-  { icone: "♡", titulo: "Nossos valores", texto: "Fidelidade à Bíblia, serviço, humildade, excelência e amor ao próximo." },
+  { icone: "✝", titulo: "Quem somos", texto: "Somos uma instituição de formação teológica e missionária no modelo de internato e comprometida com o ensino das Escrituras, o desenvolvimento do caráter cristão e a preparação de homens e mulheres para o serviço no Reino de Deus.", provisorio: false },
+  { icone: "◎", titulo: "Nossa missão", texto: "Nossa missão é recrutar, preparar e enviar homens e mulheres comprometidos com Deus e com a Sua Palavra para anunciar o Evangelho de Jesus Cristo em todas as nações.", citacao: "Ide por todo o mundo, pregai o evangelho a toda criatura.", referencia: "Marcos 16:15", provisorio: false },
+  { icone: "◉", titulo: "Nossa visão", texto: "Nossa visão é formar uma geração de missionários que compreenda que o chamado de Deus para anunciar o Evangelho não está restrito a uma profissão, condição financeira ou estrutura de sustento. Cremos que cada cristão pode servir ao Senhor com os dons, as habilidades e os recursos que Ele lhe concedeu.", provisorio: false },
+  { icone: "♡", titulo: "Nossos valores", texto: "Cremos firmemente que a Bíblia é a Palavra de Deus, nossa única e suficiente regra de fé e prática, e a autoridade que orienta nossa doutrina, nosso caráter e nossa maneira de viver. Por isso, buscamos fundamentar todo o nosso ensino e ministério nas Escrituras, reconhecendo que a verdadeira formação cristã não se limita ao conhecimento, mas deve produzir transformação de vida.", provisorio: false },
   { icone: "✎", titulo: "A importância da formação teológica", texto: "O estudo sistemático das Escrituras aprofunda a fé e capacita para o ministério." },
   { icone: "☼", titulo: "Compromisso com o ensino cristão", texto: "Ensino sério, acolhedor e comprometido com a verdade bíblica." }
-].map(s => ({ ...s, provisorio: true })); // remova "provisorio" quando os textos forem oficiais
+].map(s => ({ ...s, provisorio: s.provisorio ?? true })); // remova "provisorio" quando os textos forem oficiais
 
 const DIFERENCIAIS = [
   { icone: "📖", titulo: "Aprofundamento bíblico", texto: "Estudo das Escrituras para fortalecer a fé e ampliar o conhecimento da Palavra de Deus." },
@@ -54,6 +54,11 @@ function initCarousel() {
   SLIDES_SOBRE.forEach((s, n) => {
     const slide = el("article", { class: "slide", role: "group", "aria-roledescription": "slide", "aria-label": `${n + 1} de ${SLIDES_SOBRE.length}` });
     slide.append(el("span", { class: "slide-icon", "aria-hidden": "true" }, s.icone), el("h3", {}, s.titulo), el("p", {}, s.texto));
+    if (s.citacao) {
+      const quote = el("blockquote");
+      quote.append(el("p", {}, `“${s.citacao}”`), el("cite", {}, `— ${s.referencia}`));
+      slide.append(quote);
+    }
     if (s.provisorio) slide.append(el("span", { class: "tag" }, "[Texto provisório]"));
     track.append(slide);
     const d = el("button", { type: "button", class: "dot", "aria-label": `Ir para o slide ${n + 1}: ${s.titulo}` });

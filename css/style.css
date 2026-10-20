@@ -74,6 +74,9 @@ a{color:var(--c-primary)}
 .slide-icon{font-size:2rem;color:var(--c-primary);display:block;margin-bottom:.5rem}
 .slide h3{font-size:1.6rem}
 .slide p{max-width:62ch;margin:0}
+.slide blockquote{max-width:62ch;margin:1rem 0 0;padding-left:.9rem;border-left:2px solid var(--c-primary);font-size:.95rem}
+.slide blockquote p{margin:0}
+.slide blockquote cite{display:block;margin-top:.35rem;font-style:normal}
 .slide .tag{display:inline-block;margin-top:1rem;font-size:.85rem;color:#5a6672}
 .carousel-controls{display:flex;align-items:center;justify-content:center;gap:1rem;margin-top:1.2rem}
 .carousel-btn{width:48px;height:48px;border-radius:50%;border:2px solid var(--c-primary);background:#fff;color:var(--c-primary);font-size:1.3rem;cursor:pointer;transition:background .2s,color .2s}
