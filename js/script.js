@@ -1,10 +1,8 @@
 /* ========= CONFIGURAÇÃO (edite aqui) ========= */
 const CONFIG = {
-  emailjs: { publicKey: "", serviceId: "", templateId: "" }, // veja README
   endereco: "R. Beta - Santa Helena, Dias d'Ávila - BA, 42850-000",
   mapaEmbedUrl: "https://www.google.com/maps?q=-12.582758415798896%2C-38.33219980224168&t=k&z=17&output=embed",
   mapaLinkUrl: "https://www.google.com/maps/search/?api=1&query=-12.582758415798896%2C-38.33219980224168",
-  redes: [],         // ex.: [{ nome: "Instagram", url: "https://instagram.com/..." }]
   autoplayCarrossel: false
 };
 
@@ -113,7 +111,7 @@ function initPhotoCarousel() {
   }
   function start() {
     stop();
-    if (isPlaying && !isHovered && !isFocused) timer = setInterval(() => show(current + 1), 6000);
+    if (isPlaying && !isHovered && !isFocused) timer = setInterval(() => show(current + 1), 2000);
   }
   function updateToggle() {
     toggle.textContent = isPlaying ? "Pausar" : "Reproduzir";
@@ -165,65 +163,9 @@ function initMap() {
   else { link.removeAttribute("href"); link.setAttribute("aria-disabled", "true"); link.textContent = "Localização em breve"; }
 }
 
-/* ========= FORMULÁRIO ========= */
-function initForm() {
-  const form = $("#contactForm"), status = $("#formStatus"), btn = $("#enviarBtn");
-  const rules = {
-    nome: v => v.trim().split(/\s+/).filter(Boolean).length >= 2 ? "" : "Informe seu nome completo.",
-    email: v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()) ? "" : "Informe um e-mail válido, como nome@exemplo.com.",
-    assunto: v => v.trim().length >= 3 ? "" : "Informe o assunto da mensagem.",
-    mensagem: v => v.trim().length >= 10 ? "" : "Escreva uma mensagem com pelo menos 10 caracteres."
-  };
-  const check = name => {
-    const f = form.elements[name], msg = rules[name](f.value);
-    $(`#${name}-erro`).textContent = msg;
-    f.setAttribute("aria-invalid", msg ? "true" : "false");
-    return !msg;
-  };
-  Object.keys(rules).forEach(n => form.elements[n].addEventListener("blur", () => check(n)));
-  const setStatus = (t, cls) => { status.textContent = t; status.className = "form-status " + (cls || ""); };
-  const loadedAt = Date.now();
-  const COOLDOWN = 60000;
-
-  form.addEventListener("submit", async e => {
-    e.preventDefault();
-    const valid = Object.keys(rules).map(check).every(Boolean);
-    if (!valid) { setStatus("Corrija os campos indicados e tente novamente.", "fail"); form.querySelector('[aria-invalid="true"]').focus(); return; }
-    if (form.elements.empresa.value) return; // honeypot: robôs
-    if (Date.now() - loadedAt < 3000) { setStatus("Aguarde alguns segundos e envie novamente.", "fail"); return; }
-    const last = Number(sessionStorage.getItem("sdc_last_send") || 0);
-    if (Date.now() - last < COOLDOWN) { setStatus("Você enviou uma mensagem há pouco. Aguarde um minuto para enviar outra.", "fail"); return; }
-    const c = CONFIG.emailjs;
-    if (!c.publicKey || !c.serviceId || !c.templateId || !window.emailjs) {
-      setStatus("O envio ainda não foi configurado. Escreva diretamente para sdcteologia@gmail.com.", "fail"); return;
-    }
-    btn.disabled = true; setStatus("Enviando…");
-    try {
-      const res = await emailjs.send(c.serviceId, c.templateId, {
-        from_name: form.elements.nome.value.trim(),
-        reply_to: form.elements.email.value.trim(),
-        subject: form.elements.assunto.value.trim(),
-        message: form.elements.mensagem.value.trim(),
-        to_email: "sdcteologia@gmail.com"
-      }, { publicKey: c.publicKey });
-      if (res.status !== 200) throw new Error("status " + res.status);
-      sessionStorage.setItem("sdc_last_send", Date.now());
-      form.reset(); setStatus("Mensagem enviada com sucesso. Obrigado pelo contato!", "ok");
-    } catch (err) {
-      console.warn("Falha no envio:", err);
-      setStatus("Não foi possível enviar agora. Tente novamente ou escreva para sdcteologia@gmail.com.", "fail");
-    } finally { btn.disabled = false; }
-  });
-}
-
 /* ========= RODAPÉ E ANIMAÇÕES ========= */
 function initFooter() {
   $("#ano").textContent = new Date().getFullYear();
-  const ul = $("#redesSociais");
-  CONFIG.redes.forEach(r => {
-    const li = el("li"), a = el("a", { href: r.url, target: "_blank", rel: "noopener noreferrer" }, r.nome);
-    li.append(a); ul.append(li);
-  });
 }
 function initReveal() {
   const items = document.querySelectorAll(".reveal");
@@ -233,5 +175,5 @@ function initReveal() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  initMenu(); initCarousel(); initPhotoCarousel(); renderDiferenciais(); initMap(); initForm(); initFooter(); initReveal();
+  initMenu(); initCarousel(); initPhotoCarousel(); renderDiferenciais(); initMap(); initFooter(); initReveal();
 });
