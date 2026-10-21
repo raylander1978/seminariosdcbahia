@@ -130,6 +130,7 @@ address{font-style:normal;margin-bottom:1.2rem}
 .contact-float-button{display:flex;align-items:center;justify-content:center;gap:.55rem;min-height:44px;padding:.55rem 1rem;border:1px solid rgba(18,51,90,.12);border-radius:999px;background:rgba(255,255,255,.9);color:var(--c-primary-dark);font-size:.95rem;font-weight:700;line-height:1.2;text-decoration:none;box-shadow:0 3px 12px rgba(0,0,0,.2);opacity:.88;transition:opacity .2s,transform .2s}
 .contact-float-button:hover,.contact-float-button:focus-visible{opacity:1;transform:translateY(-2px)}
 .contact-float-email{max-width:100%;overflow-wrap:anywhere}
+.contact-email-icon{font-size:1.15rem;line-height:1}
 .contact-float-whatsapp{background:rgba(37,211,102,.92);color:#073b1e}
 .contact-float-instagram{background:rgba(255,255,255,.92);color:#a12a69}
 .contact-float-button svg{width:22px;height:22px;flex:0 0 22px;fill:currentColor}
