@@ -137,6 +137,96 @@ function initPhotoCarousel() {
   start();
 }
 
+/* ========= CARROSSEL DO INSTAGRAM ========= */
+function initInstagramCarousel() {
+  const root = $("#instagramCarousel");
+  if (!root) return;
+
+  const track = $("#instagramTrack"), posts = [...track.children];
+  const count = $("#instagramCount"), toggle = $("#instagramToggle");
+  const embedScript = $("#instagramEmbedScript");
+  const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let current = 0, timer = null, isPlaying = !reducedMotion, isHovered = false, isFocused = false;
+
+  function visibleCount() {
+    if (matchMedia("(max-width: 560px)").matches) return 1;
+    if (matchMedia("(max-width: 860px)").matches) return 2;
+    return 3;
+  }
+  function processEmbeds() {
+    if (window.instgrm && window.instgrm.Embeds) window.instgrm.Embeds.process();
+  }
+  function createPostLink(post) {
+    return el("a", { href: post.dataset.postUrl, target: "_blank", rel: "noopener noreferrer" }, "Ver publicação no Instagram");
+  }
+  function renderPosts() {
+    const visible = visibleCount();
+    posts.forEach((post, index) => {
+      const active = index >= current && index < current + visible;
+      post.setAttribute("aria-hidden", String(!active));
+      post.inert = !active;
+      if (active && post.dataset.embedReady !== "true") {
+        const embed = el("blockquote", {
+          class: "instagram-media",
+          "data-instgrm-permalink": post.dataset.postUrl,
+          "data-instgrm-version": "14"
+        });
+        embed.append(createPostLink(post));
+        post.replaceChildren(embed);
+        post.dataset.embedReady = "true";
+      }
+    });
+
+    const step = posts[0].getBoundingClientRect().width + parseFloat(getComputedStyle(track).gap);
+    track.style.transform = `translateX(-${current * step}px)`;
+    count.textContent = `Publicações ${current + 1} a ${current + visible} de ${posts.length}`;
+    processEmbeds();
+    setTimeout(() => {
+      const currentVisible = visibleCount();
+      posts.forEach((post, index) => {
+        const active = index >= current && index < current + currentVisible;
+        if (!active && post.dataset.embedReady === "true") {
+          post.replaceChildren(createPostLink(post));
+          delete post.dataset.embedReady;
+        }
+      });
+    }, 650);
+  }
+  function show(index) {
+    const maxStart = posts.length - visibleCount();
+    current = (index + maxStart + 1) % (maxStart + 1);
+    renderPosts();
+  }
+  function stop() {
+    clearInterval(timer);
+    timer = null;
+  }
+  function start() {
+    stop();
+    if (isPlaying && !isHovered && !isFocused) timer = setInterval(() => show(current + 1), 5000);
+  }
+  function updateToggle() {
+    toggle.textContent = isPlaying ? "Pausar" : "Reproduzir";
+    toggle.setAttribute("aria-label", isPlaying ? "Pausar carrossel do Instagram" : "Reproduzir carrossel do Instagram");
+  }
+
+  $("#instagramPrev").addEventListener("click", () => { show(current - 1); start(); });
+  $("#instagramNext").addEventListener("click", () => { show(current + 1); start(); });
+  toggle.addEventListener("click", () => { isPlaying = !isPlaying; updateToggle(); start(); });
+  root.addEventListener("mouseenter", () => { isHovered = true; stop(); });
+  root.addEventListener("mouseleave", () => { isHovered = false; start(); });
+  root.addEventListener("focusin", () => { isFocused = true; stop(); });
+  root.addEventListener("focusout", event => {
+    if (!root.contains(event.relatedTarget)) { isFocused = false; start(); }
+  });
+  window.addEventListener("resize", () => show(current), { passive: true });
+  if (embedScript) embedScript.addEventListener("load", processEmbeds, { once: true });
+
+  updateToggle();
+  renderPosts();
+  start();
+}
+
 /* ========= DIFERENCIAIS ========= */
 function renderDiferenciais() {
   const box = $("#cardsDiferenciais");
@@ -175,5 +265,5 @@ function initReveal() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  initMenu(); initCarousel(); initPhotoCarousel(); renderDiferenciais(); initMap(); initFooter(); initReveal();
+  initMenu(); initCarousel(); initPhotoCarousel(); initInstagramCarousel(); renderDiferenciais(); initMap(); initFooter(); initReveal();
 });
