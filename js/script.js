@@ -14,7 +14,6 @@ const SLIDES_SOBRE = [
   { icone: "◎", titulo: "Nossa missão", texto: "Nossa missão é recrutar, preparar e enviar homens e mulheres comprometidos com Deus e com a Sua Palavra para anunciar o Evangelho de Jesus Cristo em todas as nações.", citacao: "Ide por todo o mundo, pregai o evangelho a toda criatura.", referencia: "Marcos 16:15", provisorio: false },
   { icone: "◉", titulo: "Nossa visão", texto: "Nossa visão é formar uma geração de missionários que compreenda que o chamado de Deus para anunciar o Evangelho não está restrito a uma profissão, condição financeira ou estrutura de sustento. Cremos que cada cristão pode servir ao Senhor com os dons, as habilidades e os recursos que Ele lhe concedeu.", provisorio: false },
   { icone: "♡", titulo: "Nossos valores", texto: "Cremos firmemente que a Bíblia é a Palavra de Deus, nossa única e suficiente regra de fé e prática, e a autoridade que orienta nossa doutrina, nosso caráter e nossa maneira de viver. Por isso, buscamos fundamentar todo o nosso ensino e ministério nas Escrituras, reconhecendo que a verdadeira formação cristã não se limita ao conhecimento, mas deve produzir transformação de vida.", provisorio: false },
-  { icone: "✎", titulo: "A importância da formação teológica", texto: "A formação teológica é fundamental para o desenvolvimento de obreiros comprometidos com a verdade bíblica, firmes na fé e preparados para enfrentar os desafios do ministério. Compreendemos que as igrejas locais desempenham um papel indispensável na formação espiritual dos cristãos e na expansão do Evangelho. Por isso, não nos vemos como substitutos da igreja local, mas como parceiros em sua missão, oferecendo suporte bíblico, teológico e missionário para o preparo de seus obreiros.", provisorio: false }
 ].map(s => ({ ...s, provisorio: s.provisorio ?? true })); // remova "provisorio" quando os textos forem oficiais
 
 const DIFERENCIAIS = [
@@ -90,6 +89,54 @@ function initCarousel() {
     timer = setInterval(() => go(i + 1), 7000);
   }
   go(0);
+}
+
+/* ========= CARROSSEL DE FOTOS ========= */
+function initPhotoCarousel() {
+  const root = $("#photoCarousel"), slides = [...root.querySelectorAll(".photo-slide")];
+  const dots = [...$("#photoDots").children], toggle = $("#photoToggle");
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let current = 0, timer = null, isPlaying = !reducedMotion, isHovered = false, isFocused = false;
+
+  function show(index) {
+    current = (index + slides.length) % slides.length;
+    slides.forEach((slide, i) => {
+      const active = i === current;
+      slide.classList.toggle("is-active", active);
+      slide.setAttribute("aria-hidden", String(!active));
+      dots[i].setAttribute("aria-current", String(active));
+    });
+  }
+  function stop() {
+    clearInterval(timer);
+    timer = null;
+  }
+  function start() {
+    stop();
+    if (isPlaying && !isHovered && !isFocused) timer = setInterval(() => show(current + 1), 6000);
+  }
+  function updateToggle() {
+    toggle.textContent = isPlaying ? "Pausar" : "Reproduzir";
+    toggle.setAttribute("aria-label", isPlaying ? "Pausar apresentação" : "Reproduzir apresentação");
+  }
+
+  $("#photoPrev").addEventListener("click", () => { show(current - 1); start(); });
+  $("#photoNext").addEventListener("click", () => { show(current + 1); start(); });
+  dots.forEach((dot, index) => dot.addEventListener("click", () => { show(index); start(); }));
+  toggle.addEventListener("click", () => {
+    isPlaying = !isPlaying;
+    updateToggle();
+    start();
+  });
+  root.addEventListener("mouseenter", () => { isHovered = true; stop(); });
+  root.addEventListener("mouseleave", () => { isHovered = false; start(); });
+  root.addEventListener("focusin", () => { isFocused = true; stop(); });
+  root.addEventListener("focusout", event => {
+    if (!root.contains(event.relatedTarget)) { isFocused = false; start(); }
+  });
+
+  updateToggle();
+  start();
 }
 
 /* ========= DIFERENCIAIS ========= */
@@ -186,5 +233,5 @@ function initReveal() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  initMenu(); initCarousel(); renderDiferenciais(); initMap(); initForm(); initFooter(); initReveal();
+  initMenu(); initCarousel(); initPhotoCarousel(); renderDiferenciais(); initMap(); initForm(); initFooter(); initReveal();
 });

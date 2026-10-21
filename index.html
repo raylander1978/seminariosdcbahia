@@ -72,6 +72,39 @@
     </div>
   </section>
 
+  <section class="section section-alt" aria-labelledby="comunidadeTitulo">
+    <div class="container">
+      <h2 id="comunidadeTitulo" class="section-title">Nossa comunidade</h2>
+      <p class="section-lead">Professores, famílias e alunos unidos na formação e no serviço cristão.</p>
+      <div class="photo-carousel" id="photoCarousel" role="region" aria-roledescription="carrossel" aria-label="Comunidade do Seminário">
+        <div class="photo-carousel-viewport">
+          <figure class="photo-slide is-active" role="group" aria-roledescription="slide" aria-label="1 de 3" aria-hidden="false">
+            <img src="assets/images/professores.png" alt="Professores do Seminário reunidos" width="1024" height="768">
+            <figcaption>Professores</figcaption>
+          </figure>
+          <figure class="photo-slide" role="group" aria-roledescription="slide" aria-label="2 de 3" aria-hidden="true">
+            <img src="assets/images/esposas-professores.png" alt="Esposas dos professores reunidas" width="1024" height="768" loading="lazy">
+            <figcaption>Esposas dos professores</figcaption>
+          </figure>
+          <figure class="photo-slide" role="group" aria-roledescription="slide" aria-label="3 de 3" aria-hidden="true">
+            <img src="assets/images/alunos.png" alt="Alunos reunidos em sala de aula" width="1024" height="768" loading="lazy">
+            <figcaption>Alunos</figcaption>
+          </figure>
+        </div>
+        <div class="photo-carousel-controls">
+          <button type="button" class="carousel-btn" id="photoPrev" aria-label="Imagem anterior">&#8592;</button>
+          <div class="carousel-dots" id="photoDots" role="group" aria-label="Escolher imagem">
+            <button type="button" class="dot" aria-label="Mostrar imagem 1: Professores" aria-current="true"></button>
+            <button type="button" class="dot" aria-label="Mostrar imagem 2: Esposas dos professores" aria-current="false"></button>
+            <button type="button" class="dot" aria-label="Mostrar imagem 3: Alunos" aria-current="false"></button>
+          </div>
+          <button type="button" class="carousel-btn" id="photoNext" aria-label="Próxima imagem">&#8594;</button>
+          <button type="button" class="photo-carousel-toggle" id="photoToggle" aria-label="Pausar apresentação">Pausar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- SOBRE: conteúdo do carrossel fica em js/script.js (SLIDES_SOBRE) -->
   <section class="section" id="sobre" aria-labelledby="sobreTitulo">
     <div class="container">
